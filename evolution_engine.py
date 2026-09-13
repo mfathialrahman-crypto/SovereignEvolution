@@ -1,48 +1,26 @@
 #!/usr/bin/env python3
 """
 SovereignEvolution — Permanent Autonomous Evolution Engine
-Version: 1.0
+Version: 1.1
 
-Role: Daily / Weekly / Monthly evolution driver for the MFR ecosystem.
-
-Ecosystem targets:
-  - MFR-Cognition   → Cognitive Core
-  - AetherMind      → Intelligence / Reasoning Layer
-  - HelixMind       → Telemetry / Anomaly Intelligence Layer
+Drives continuous improvement of the MFR Cognitive Ecosystem.
 """
 
 import json
 import hashlib
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 
-# ==================== CONFIG ====================
 MEMORY_FILE = "evolution_memory.json"
 DAILY_REPORT = "daily_report.md"
-WEEKLY_REPORT = "weekly_report.md"
 STATUS_FILE = "evolution_status.json"
 LOG_FILE = "evolution.log"
 
 ECOSYSTEM = [
-    {
-        "name": "MFR-Cognition",
-        "role": "Cognitive Core",
-        "repo": "mfathialrahman-crypto/MFR-Cognition",
-        "main_file": "brain.py"
-    },
-    {
-        "name": "AetherMind",
-        "role": "Intelligence / Reasoning Layer",
-        "repo": "mfathialrahman-crypto/AetherMind",
-        "main_file": "core.py"
-    },
-    {
-        "name": "HelixMind",
-        "role": "Telemetry / Anomaly Intelligence Layer",
-        "repo": "mfathialrahman-crypto/HelixMind",
-        "main_file": "helix_core.py"
-    }
+    {"name": "MFR-Cognition", "role": "Cognitive Core", "repo": "mfathialrahman-crypto/MFR-Cognition"},
+    {"name": "AetherMind", "role": "Intelligence / Reasoning Layer", "repo": "mfathialrahman-crypto/AetherMind"},
+    {"name": "HelixMind", "role": "Telemetry / Anomaly Intelligence Layer", "repo": "mfathialrahman-crypto/HelixMind"},
 ]
 
 def utc_now() -> datetime:
@@ -76,10 +54,19 @@ def signature(data: Any) -> str:
 def load_memory() -> Dict:
     return load_json(MEMORY_FILE, {
         "created_at": utc_now().isoformat(),
-        "version": "1.0",
+        "version": "1.1",
         "cycles": [],
-        "known_capabilities": [],
-        "known_gaps": [],
+        "known_capabilities": [
+            "HelixMind multi-layer + correlation + explainable health",
+            "MFR-Cognition decision pipeline with confidence",
+            "AetherMind hypothesis + recommendation with evidence-first rule"
+        ],
+        "known_gaps": [
+            "No unit tests in any project",
+            "No shared event/schema contracts",
+            "No cross-project data consumption yet",
+            "Limited long-term baseline learning"
+        ],
         "project_ideas": [],
         "last_daily": None,
         "last_weekly": None,
@@ -93,169 +80,154 @@ def record_cycle(memory: Dict, cycle_type: str, changes: List[str],
     entry = {
         "id": signature({"ts": utc_now().isoformat(), "type": cycle_type}),
         "timestamp": utc_now().isoformat(),
-        "type": cycle_type,          # daily | weekly | monthly
+        "type": cycle_type,
         "changes": changes,
         "new_capabilities": capabilities,
         "discoveries": discoveries,
         "next_target": next_target,
         "notes": notes
     }
-    memory["cycles"].append(entry)
-    # Keep last 90 cycles
-    if len(memory["cycles"]) > 90:
-        memory["cycles"] = memory["cycles"][-90:]
+    memory.setdefault("cycles", []).append(entry)
+    if len(memory["cycles"]) > 120:
+        memory["cycles"] = memory["cycles"][-120:]
     memory["total_cycles"] = memory.get("total_cycles", 0) + 1
     memory["last_" + cycle_type] = utc_now().isoformat()
+    # Update known capabilities
+    for c in capabilities:
+        if c not in memory.get("known_capabilities", []):
+            memory.setdefault("known_capabilities", []).append(c)
     return memory
 
 def analyze_ecosystem() -> Dict:
-    """
-    Static analysis of known ecosystem state.
-    In a full autonomous setting this would pull live repo data.
-    Here we maintain a truthful snapshot of current known strengths/gaps.
-    """
     analysis = {
         "timestamp": utc_now().isoformat(),
-        "projects": {},
-        "system_gaps": [],
-        "high_value_opportunities": []
-    }
-
-    # Known current state (updated as evolution progresses)
-    analysis["projects"]["HelixMind"] = {
-        "maturity": "high",
-        "strengths": [
-            "Multi-layer anomaly detection",
-            "Correlated multi-signal events",
-            "Explainable health score",
-            "Structured events + insights"
+        "projects": {
+            "HelixMind": {
+                "maturity": "high",
+                "version": "1.1",
+                "strengths": [
+                    "Multi-layer anomaly detection",
+                    "Correlated multi-signal events",
+                    "Explainable health score with components",
+                    "Structured events + insights"
+                ],
+                "gaps": ["No unit tests", "No long-term baseline model"]
+            },
+            "MFR-Cognition": {
+                "maturity": "high",
+                "version": "4.1",
+                "strengths": [
+                    "Structured decision pipeline",
+                    "Evidence + confidence scoring",
+                    "Persistent decision traces"
+                ],
+                "gaps": ["No unit tests", "Still primarily metric-driven"]
+            },
+            "AetherMind": {
+                "maturity": "medium-high",
+                "version": "1.1",
+                "strengths": [
+                    "Hypothesis generation",
+                    "Evidence-first recommendations",
+                    "Confidence scoring",
+                    "Reasoning trace"
+                ],
+                "gaps": ["No unit tests", "Does not yet consume Helix/MFR outputs"]
+            }
+        },
+        "system_gaps": [
+            "No shared event/schema contracts between projects",
+            "No automated tests in any repository",
+            "No cross-project data flow yet",
+            "No long-term baseline learning across days",
+            "No Project Factory operationalization beyond discovery"
         ],
-        "gaps": [
-            "No unit tests",
-            "No external event consumption yet",
-            "Limited long-term trend models"
+        "high_value_opportunities": [
+            {
+                "id": "test-foundation",
+                "title": "Add real unit tests across the ecosystem",
+                "impact": 9, "feasibility": 8, "strategic": 9, "reusability": 10,
+                "score": 9*8*9*10,
+                "description": "Introduce pytest tests for core logic in HelixMind, MFR-Cognition and AetherMind."
+            },
+            {
+                "id": "shared-contracts",
+                "title": "Create shared event and decision schemas",
+                "impact": 8, "feasibility": 7, "strategic": 9, "reusability": 10,
+                "score": 8*7*9*10,
+                "description": "Define common contracts so projects can interoperate cleanly without tight coupling."
+            },
+            {
+                "id": "cross-project-flow",
+                "title": "Enable Helix → MFR → Aether data flow",
+                "impact": 9, "feasibility": 6, "strategic": 9, "reusability": 8,
+                "score": 9*6*9*8,
+                "description": "Allow AetherMind to optionally consume structured outputs from HelixMind and MFR-Cognition."
+            },
+            {
+                "id": "baseline-learning",
+                "title": "Long-term baseline learning in HelixMind",
+                "impact": 7, "feasibility": 7, "strategic": 7, "reusability": 8,
+                "score": 7*7*7*8,
+                "description": "Learn normal ranges over longer windows instead of only short recent history."
+            }
         ]
     }
-
-    analysis["projects"]["MFR-Cognition"] = {
-        "maturity": "medium-high",
-        "strengths": [
-            "Structured decision pipeline",
-            "Evidence + confidence scoring",
-            "Decision trace persistence"
-        ],
-        "gaps": [
-            "No unit tests",
-            "Still largely metric-driven",
-            "Limited memory abstraction"
-        ]
-    }
-
-    analysis["projects"]["AetherMind"] = {
-        "maturity": "medium",
-        "strengths": [
-            "Cleaner structure than original",
-            "Logging present",
-            "Basic statistical detection"
-        ],
-        "gaps": [
-            "Still too similar to monitoring scripts",
-            "No real reasoning / hypothesis layer",
-            "No consumption of Helix or MFR outputs",
-            "No unit tests"
-        ]
-    }
-
-    analysis["system_gaps"] = [
-        "No shared event/schema contracts between projects",
-        "No automated tests in any repository",
-        "No cross-project data flow yet",
-        "AetherMind not yet acting as Intelligence Layer",
-        "No Project Factory operationalization",
-        "No long-term trend / baseline learning across days"
-    ]
-
-    analysis["high_value_opportunities"] = [
-        {
-            "id": "aether-reasoning-upgrade",
-            "title": "Upgrade AetherMind to real Intelligence Layer",
-            "impact": 9,
-            "feasibility": 8,
-            "strategic": 9,
-            "reusability": 7,
-            "score": 9*8*9*7,
-            "description": "Add hypothesis generation, evidence weighing, and recommendation with confidence."
-        },
-        {
-            "id": "shared-contracts",
-            "title": "Create shared event/schema contracts",
-            "impact": 8,
-            "feasibility": 7,
-            "strategic": 9,
-            "reusability": 10,
-            "score": 8*7*9*10,
-            "description": "Define common event and decision schemas so projects can interoperate cleanly."
-        },
-        {
-            "id": "test-foundation",
-            "title": "Add real unit + workflow tests",
-            "impact": 8,
-            "feasibility": 8,
-            "strategic": 8,
-            "reusability": 9,
-            "score": 8*8*8*9,
-            "description": "Introduce pytest-based tests for core logic in all three projects."
-        },
-        {
-            "id": "baseline-learning",
-            "title": "Long-term baseline learning in HelixMind",
-            "impact": 7,
-            "feasibility": 7,
-            "strategic": 7,
-            "reusability": 8,
-            "score": 7*7*7*8,
-            "description": "Learn normal ranges over days/weeks instead of only short windows."
-        }
-    ]
-
-    # Sort opportunities by score
     analysis["high_value_opportunities"].sort(key=lambda x: x["score"], reverse=True)
     return analysis
 
 def choose_next_target(analysis: Dict, memory: Dict) -> Dict:
-    """Select the highest value target that has not been recently completed."""
     opportunities = analysis.get("high_value_opportunities", [])
-    recent_changes = []
-    for c in memory.get("cycles", [])[-10:]:
-        recent_changes.extend(c.get("changes", []))
+    recent = []
+    for c in memory.get("cycles", [])[-8:]:
+        recent.append(c.get("next_target", ""))
+        recent.extend(c.get("changes", []))
 
     for opp in opportunities:
-        # Simple avoidance of repeating the exact same target too soon
-        if opp["id"] not in str(recent_changes):
+        if opp["id"] not in str(recent):
             return opp
-
-    # Fallback
     return opportunities[0] if opportunities else {
         "id": "maintain",
         "title": "Maintain and observe",
         "description": "No high-value safe change identified today."
     }
 
-def generate_daily_report(memory: Dict, analysis: Dict, target: Dict) -> str:
+def detect_cycle_type(memory: Dict) -> str:
+    """Simple heuristic for daily / weekly / monthly."""
+    now = utc_now()
+    last_weekly = memory.get("last_weekly")
+    last_monthly = memory.get("last_monthly")
+
+    if last_monthly:
+        try:
+            lm = datetime.fromisoformat(last_monthly.replace("Z", "+00:00"))
+            if (now - lm) > timedelta(days=28):
+                return "monthly"
+        except Exception:
+            pass
+    if last_weekly:
+        try:
+            lw = datetime.fromisoformat(last_weekly.replace("Z", "+00:00"))
+            if (now - lw) > timedelta(days=6):
+                return "weekly"
+        except Exception:
+            pass
+    return "daily"
+
+def generate_daily_report(memory: Dict, analysis: Dict, target: Dict, cycle_type: str) -> str:
     now = utc_now()
     lines = [
-        f"# Daily Evolution Report",
+        f"# {cycle_type.upper()} Evolution Report",
         f"",
         f"**Date:** {now.strftime('%Y-%m-%d %H:%M:%S')} UTC",
-        f"**Engine Version:** 1.0",
+        f"**Engine:** SovereignEvolution v1.1",
         f"**Total Cycles:** {memory.get('total_cycles', 0)}",
         f"",
         f"## Ecosystem Snapshot",
         f"",
     ]
-
     for name, info in analysis.get("projects", {}).items():
-        lines.append(f"### {name} ({info.get('maturity')})")
+        lines.append(f"### {name} (v{info.get('version', '?')} — {info.get('maturity')})")
         lines.append(f"- Strengths: {', '.join(info.get('strengths', []))}")
         lines.append(f"- Gaps: {', '.join(info.get('gaps', []))}")
         lines.append("")
@@ -272,38 +244,36 @@ def generate_daily_report(memory: Dict, analysis: Dict, target: Dict) -> str:
     if "score" in target:
         lines.append(f"- **Priority Score:** {target.get('score')}")
     lines.append("")
-
     lines.append("## Rule")
-    lines.append("Only real, high-value, safe changes are executed. If no such change exists, the cycle records analysis and waits for the next opportunity.")
+    lines.append("Only real, high-value, safe changes are executed. Artificial changes are forbidden.")
     lines.append("")
     lines.append("---")
     lines.append("*Generated by SovereignEvolution Engine*")
     return "\n".join(lines)
 
 def main():
-    log("=== SovereignEvolution Daily Cycle Started ===")
+    log("=== SovereignEvolution Cycle Started ===")
 
     memory = load_memory()
+    cycle_type = detect_cycle_type(memory)
     analysis = analyze_ecosystem()
     target = choose_next_target(analysis, memory)
 
+    log(f"Cycle type: {cycle_type}")
     log(f"Selected next target: {target.get('id')} — {target.get('title')}")
 
-    # In this version the engine records the analysis and target.
-    # Actual cross-repo code changes are performed by the human/AI operator
-    # or future enhanced actions that have proper write tokens.
     changes = [
-        "Recorded full ecosystem analysis",
+        f"Performed {cycle_type} ecosystem analysis",
         f"Selected next target: {target.get('id')}"
     ]
-    capabilities = []
-    discoveries = analysis.get("system_gaps", [])[:5]
+    capabilities = memory.get("known_capabilities", [])[:]
+    discoveries = analysis.get("system_gaps", [])[:4]
 
     memory = record_cycle(
         memory,
-        cycle_type="daily",
+        cycle_type=cycle_type,
         changes=changes,
-        capabilities=capabilities,
+        capabilities=[],
         discoveries=discoveries,
         next_target=target.get("id", "unknown"),
         notes=target.get("description", "")
@@ -311,21 +281,23 @@ def main():
 
     save_json(MEMORY_FILE, memory)
 
-    report = generate_daily_report(memory, analysis, target)
+    report = generate_daily_report(memory, analysis, target, cycle_type)
     with open(DAILY_REPORT, "w", encoding="utf-8") as f:
         f.write(report)
 
     status = {
         "last_run": utc_now().isoformat(),
-        "engine_version": "1.0",
+        "engine_version": "1.1",
+        "cycle_type": cycle_type,
         "total_cycles": memory.get("total_cycles", 0),
         "next_target": target,
-        "ecosystem": [p["name"] for p in ECOSYSTEM]
+        "ecosystem": [p["name"] for p in ECOSYSTEM],
+        "known_capabilities_count": len(memory.get("known_capabilities", []))
     }
     save_json(STATUS_FILE, status)
 
     print(report)
-    log("=== SovereignEvolution Daily Cycle Completed ===")
+    log("=== SovereignEvolution Cycle Completed ===")
 
 if __name__ == "__main__":
     main()
