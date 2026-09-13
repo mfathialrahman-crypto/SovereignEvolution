@@ -1,0 +1,38 @@
+name: Daily Autonomous Evolution
+
+on:
+  schedule:
+    # Every day at 03:00 UTC
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  evolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Evolution Engine
+        run: python3 evolution_engine.py
+
+      - name: Commit evolution artifacts
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add evolution_memory.json daily_report.md evolution_status.json evolution.log || true
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "SovereignEvolution daily cycle"
+          git push
