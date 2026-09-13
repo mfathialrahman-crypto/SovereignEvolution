@@ -1,0 +1,2 @@
+# SovereignEvolution currently uses only the Python standard library.
+# Add dependencies here when cross-repo analysis or testing libraries are introduced.
