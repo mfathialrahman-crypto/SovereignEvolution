@@ -1,17 +1,17 @@
 {
-  "last_run": "2026-09-14T08:08:27.649807+00:00",
+  "last_run": "2026-09-15T08:03:07.097603+00:00",
   "engine_version": "1.1",
   "cycle_type": "daily",
-  "total_cycles": 1,
+  "total_cycles": 2,
   "next_target": {
-    "id": "test-foundation",
-    "title": "Add real unit tests across the ecosystem",
-    "impact": 9,
-    "feasibility": 8,
+    "id": "shared-contracts",
+    "title": "Create shared event and decision schemas",
+    "impact": 8,
+    "feasibility": 7,
     "strategic": 9,
     "reusability": 10,
-    "score": 6480,
-    "description": "Introduce pytest tests for core logic in HelixMind, MFR-Cognition and AetherMind."
+    "score": 5040,
+    "description": "Define common contracts so projects can interoperate cleanly without tight coupling."
   },
   "ecosystem": [
     "MFR-Cognition",
